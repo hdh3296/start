@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: todo-app
+    ports:
+      - "8000:8000"
+    volumes:
+      # 개발 시 코드 변경사항 실시간 반영
+      - ./app:/app/app
+      - ./static:/app/static
+      - ./templates:/app/templates
+      # SQLite 데이터베이스 파일 유지
+      - ./todo.db:/app/todo.db
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
