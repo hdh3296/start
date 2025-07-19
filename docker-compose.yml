@@ -13,7 +13,7 @@ services:
       - ./templates:/app/templates
     environment:
       - PYTHONUNBUFFERED=1
-      - DATABASE_URL=mysql+pymysql://todouser:todopass@db:3306/tododb?charset=utf8mb4
+      - DATABASE_URL=postgresql://todouser:todopass@db:5432/tododb
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     depends_on:
       - db
@@ -21,23 +21,21 @@ services:
       - todo-network
 
   db:
-    image: mysql:8.0
-    container_name: todo-mysql
+    image: postgres:15
+    container_name: todo-postgres
     ports:
-      - "3306:3306"
+      - "5432:5432"
     environment:
-      - MYSQL_ROOT_PASSWORD=rootpass
-      - MYSQL_DATABASE=tododb
-      - MYSQL_USER=todouser
-      - MYSQL_PASSWORD=todopass
+      - POSTGRES_DB=tododb
+      - POSTGRES_USER=todouser
+      - POSTGRES_PASSWORD=todopass
     volumes:
-      - mysql_data:/var/lib/mysql
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - todo-network
 
 volumes:
-  mysql_data:
+  postgres_data:
 
 networks:
   todo-network:
