@@ -30,3 +30,8 @@ logs/
 
 # Environment variables
 .env
+
+# Claude/BMAD specific
+.claude/
+.bmad-core/
+web-bundles/
