@@ -11,8 +11,34 @@ services:
       - ./app:/app/app
       - ./static:/app/static
       - ./templates:/app/templates
-      # SQLite 데이터베이스 파일 유지
-      - ./todo.db:/app/todo.db
     environment:
       - PYTHONUNBUFFERED=1
+      - DATABASE_URL=mysql+pymysql://todouser:todopass@db:3306/tododb?charset=utf8mb4
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      - db
+    networks:
+      - todo-network
+
+  db:
+    image: mysql:8.0
+    container_name: todo-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpass
+      - MYSQL_DATABASE=tododb
+      - MYSQL_USER=todouser
+      - MYSQL_PASSWORD=todopass
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    networks:
+      - todo-network
+
+volumes:
+  mysql_data:
+
+networks:
+  todo-network:
+    driver: bridge
