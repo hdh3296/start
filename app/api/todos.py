@@ -46,7 +46,7 @@ class TodoResponse(BaseModel):
         from_attributes = True
 
 # 모든 Todo 조회
-@router.get("/", response_model=List[TodoResponse])
+@router.get("", response_model=List[TodoResponse])
 def get_todos(db: Session = Depends(get_db)):
     try:
         todos = db.query(Todo).order_by(Todo.created_at.desc()).all()
@@ -55,7 +55,7 @@ def get_todos(db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail="데이터베이스 오류가 발생했습니다.")
 
 # 새 Todo 생성
-@router.post("/", response_model=TodoResponse)
+@router.post("", response_model=TodoResponse)
 def create_todo(todo: TodoCreate, db: Session = Depends(get_db)):
     try:
         db_todo = Todo(title=todo.title)
