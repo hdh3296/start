@@ -1,0 +1,23 @@
+[
+  {
+    "session_id": "0ea36e4b-095e-47d9-9900-e58f7a9dcf10",
+    "transcript_path": "/Users/hdh/.claude/projects/-Users-hdh-dev-st-start/0ea36e4b-095e-47d9-9900-e58f7a9dcf10.jsonl",
+    "cwd": "/Users/hdh/dev/st/start",
+    "hook_event_name": "Notification",
+    "message": "Claude needs your permission to use "
+  },
+  {
+    "session_id": "e79c4114-f9a2-4dc7-b0f3-6513bb3ca55d",
+    "transcript_path": "/Users/hdh/.claude/projects/-Users-hdh-dev-st-start/e79c4114-f9a2-4dc7-b0f3-6513bb3ca55d.jsonl",
+    "cwd": "/Users/hdh/dev/st/start",
+    "hook_event_name": "Notification",
+    "message": "Claude needs your permission to use Bash"
+  },
+  {
+    "session_id": "92e3bf18-c114-43f3-a698-580b11dbda1e",
+    "transcript_path": "/Users/hdh/.claude/projects/-Users-hdh-dev-st-start/92e3bf18-c114-43f3-a698-580b11dbda1e.jsonl",
+    "cwd": "/Users/hdh/dev/st/start",
+    "hook_event_name": "Notification",
+    "message": "Claude is waiting for your input"
+  }
+]

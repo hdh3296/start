@@ -1,0 +1,9 @@
+[
+  {
+    "session_id": "92e3bf18-c114-43f3-a698-580b11dbda1e",
+    "transcript_path": "/Users/hdh/.claude/projects/-Users-hdh-dev-st-start/92e3bf18-c114-43f3-a698-580b11dbda1e.jsonl",
+    "cwd": "/Users/hdh/dev/st/start",
+    "hook_event_name": "SubagentStop",
+    "stop_hook_active": false
+  }
+]
