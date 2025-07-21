@@ -5,7 +5,7 @@ services:
     build: .
     container_name: todo-app
     ports:
-      - "8000:8000"
+      - "8001:8000"
     volumes:
       # 개발 시 코드 변경사항 실시간 반영
       - ./app:/app/app
@@ -24,7 +24,7 @@ services:
     image: postgres:15
     container_name: todo-postgres
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       - POSTGRES_DB=tododb
       - POSTGRES_USER=todouser

@@ -1,5 +1,6 @@
-// API 기본 URL
-const API_URL = '/api/todos';
+// API 기본 URL - 현재 경로 기반으로 설정
+const BASE_PATH = window.location.pathname.replace(/\/$/, '');
+const API_URL = `${BASE_PATH}/api/todos`;
 
 // DOM 요소
 const todoInput = document.getElementById('todoInput');
