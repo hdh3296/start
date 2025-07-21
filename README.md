@@ -29,15 +29,17 @@ FastAPI와 PostgreSQL을 사용한 간단한 Todo 애플리케이션입니다.
 │   └── api/
 │       └── todos.py     # Todo API 라우트
 ├── static/
-│   ├── script.js        # 프론트엔드 JavaScript
+│   ├── script.js        # 프론트엔드 JavaScript (동적 API 경로 포함)
 │   └── style.css        # CSS 스타일
 ├── templates/
 │   └── index.html       # HTML 템플릿
-├── main.py              # FastAPI 앱 진입점
+├── main.py              # FastAPI 앱 진입점 (root_path 설정 포함)
 ├── requirements.txt     # Python 패키지
 ├── Dockerfile          # Docker 이미지 빌드 설정
 ├── docker-compose.yml  # Docker 컴포즈 설정
-└── .dockerignore       # Docker 빌드 제외 파일
+├── nginx-todo-config.conf # Nginx 리버스 프록시 설정
+├── check-server-status.sh # 서버 상태 확인 스크립트
+└── deployment-checklist.md # 배포 체크리스트
 
 ```
 
@@ -63,7 +65,7 @@ docker-compose up --build
 
 3. 브라우저에서 접속
 ```
-http://localhost:8000
+http://localhost:8001
 ```
 
 ### 개발 모드
@@ -75,6 +77,25 @@ http://localhost:8000
 PostgreSQL 컨테이너 직접 접속:
 ```bash
 docker exec -it todo-postgres psql -U todouser -d tododb
+```
+
+### 리버스 프록시 배포
+
+URL prefix로 배포할 경우 (예: /todo/):
+
+1. 환경변수 설정:
+```yaml
+environment:
+  - ROOT_PATH=/todo
+```
+
+2. Nginx 설정:
+```nginx
+location /todo/ {
+    proxy_pass http://127.0.0.1:8001/;
+    proxy_set_header Host $host;
+    # ... 기타 프록시 헤더
+}
 ```
 
 ## API 엔드포인트
@@ -91,18 +112,22 @@ docker exec -it todo-postgres psql -U todouser -d tododb
 
 환경 변수로 데이터베이스 URL 설정 가능:
 - `DATABASE_URL`: PostgreSQL 연결 URL (기본값: SQLite)
+- `ROOT_PATH`: URL prefix 설정 (기본값: /todo) - 리버스 프록시 배포 시 사용
 
 ### PostgreSQL 설정
 
+개발 환경:
 - Database: tododb
 - User: todouser
 - Password: todopass
-- Port: 5432
+- Port: 5432 (로컬), 5433 (Docker 호스트)
 
 ### 프로덕션 환경
 
-DigitalOcean App Platform에서 자동으로 다음 환경 변수가 설정됩니다:
-- `DATABASE_URL`: PostgreSQL 연결 URL (자동 제공)
+DigitalOcean Droplet에 Docker로 배포:
+- URL: http://174.138.30.39/todo/
+- 포트: 8001 (Docker) → 80 (Nginx)
+- 데이터베이스: PostgreSQL 15 (Docker 컨테이너)
 
 ## 보안 고려사항
 
@@ -114,13 +139,32 @@ DigitalOcean App Platform에서 자동으로 다음 환경 변수가 설정됩�
 
 ## 배포
 
-이 애플리케이션은 DigitalOcean App Platform에 배포되어 있습니다:
+### DigitalOcean Droplet (현재)
+이 애플리케이션은 DigitalOcean Droplet에 Docker로 배포되어 있습니다:
+- URL: http://174.138.30.39/todo/
+- 웹 서버: Nginx (리버스 프록시)
+- 컨테이너: Docker & Docker Compose
+- 데이터베이스: PostgreSQL 15 (Docker 컨테이너)
+
+#### 배포 구조
+- Blog Batgan 앱: http://174.138.30.39/ (포트 8000)
+- Todo 앱: http://174.138.30.39/todo/ (포트 8001)
+- Nginx가 경로 기반으로 라우팅
+
+### DigitalOcean App Platform (이전)
 - URL: https://adam-app-gu4lz.ondigitalocean.app/
 - 자동 배포: GitHub master 브랜치 푸시 시 자동 배포
 - 데이터베이스: PostgreSQL 17 (관리형 데이터베이스)
 
 ## 마이그레이션 히스토리
 
+- 2025-01-21: DigitalOcean Droplet Docker 배포
+  - URL prefix (/todo/) 지원을 위한 FastAPI root_path 설정
+  - 정적 파일 경로 동적 변환 구현
+  - JavaScript API 경로 동적 설정
+  - Nginx 리버스 프록시 설정 추가
+  - blog-batgan 앱과 공존하도록 포트 설정 (8001, 5433)
+  
 - 2025-01-19: MySQL에서 PostgreSQL로 데이터베이스 마이그레이션
   - Python 3.13에서 3.12로 다운그레이드 (psycopg3 호환성)
   - pymysql에서 psycopg[binary]로 드라이버 변경
